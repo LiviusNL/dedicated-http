@@ -7,12 +7,12 @@ import (
 	"time"
 )
 
-// Transport returns a new, dedicated http.Transport
+// NewTransport returns a new, dedicated http.Transport
 // with the same default values as http.DefaultTransport
 //
 // The default values are default for GO 1.20. See:
 // https://pkg.go.dev/net/http#RoundTripper
-func Transport() *http.Transport {
+func NewTransport() *http.Transport {
 	return &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{

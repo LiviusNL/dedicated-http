@@ -16,7 +16,7 @@ ECHO  = /bin/echo
 default: test
 
 # run tests
-test: fmtcheck
+test: fmtcheck deps
 	@$(ECHO) "==> $@"
 	$(GOTEST)
 
@@ -37,7 +37,7 @@ fmtcheck:
 	fi
 
 # tidy go modules
-tidy:
+tidy: deps
 	@$(ECHO) "==> $@"
 	$(GOMOD) tidy
 
@@ -45,6 +45,11 @@ tidy:
 verify:
 	@$(ECHO) "==> $@"
 	$(GOMOD) verify
+
+# download modules to pre-fill the cache 
+deps:
+	@$(ECHO) "==> $@"
+	$(GOMOD) download
 
 # clean
 clean:
@@ -66,4 +71,9 @@ test-clean:
 	@$(ECHO) "==> $@"
 	$(GOCLEAN) -testcache
 
-.PHONY: test fmt fmtcheck tidy verify clean cleaner cleanest test-clean
+# store local copies of external dependenciew
+vendor: deps
+	@$(ECHO) "==> $@"
+	$(GOMOD) vendor
+
+.PHONY: test fmt fmtcheck tidy verify deps clean cleaner cleanest test-clean vendor

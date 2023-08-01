@@ -6,29 +6,23 @@ import (
 	"testing"
 
 	dedicatedhttp "github.com/liviusnl/dedicated-http"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestHTTPClient(t *testing.T) {
-	dhc := dedicatedhttp.NewClient()
-
-	if dhc == http.DefaultClient {
-		t.Error("NewClient return http.DefaultClient; want new *http.Client")
-	}
-}
-
-func TestHTTPClientDefaultTransport(t *testing.T) {
-	dhc := dedicatedhttp.NewClient()
-
-	if dhc.Transport == http.DefaultTransport {
-		t.Error("NewClient() uses http.DefaultTransport; want new *http.Transport")
-	}
-}
-
-func TestHTTPClientDedicatedTransport(t *testing.T) {
+func TestDedicatedHTTP(t *testing.T) {
 	dhc1 := dedicatedhttp.NewClient()
 	dhc2 := dedicatedhttp.NewClient()
 
-	if dhc1.Transport == dhc2.Transport {
-		t.Error("NewClient() uses *Client().Transport; want new *http.Transport")
-	}
+	assert.NotEqual(t, dhc1, http.DefaultClient,
+		"NewClient returns default HTTP Client; want new dedicated HTTP client")
+
+	assert.NotEqual(t, dhc1, dhc2,
+		"NewClient should return a new dedicated HTTP client with each call")
+
+	assert.NotEqual(t, dhc1.Transport, http.DefaultTransport,
+		"NewClient returns default HTTP Transport; want new dedicated HTTP transport ")
+
+	assert.NotEqual(t, dhc1.Transport, dhc2.Transport,
+		"NewClient should return a new HTTP client with a new HTTP Transport with each call")
+
 }
